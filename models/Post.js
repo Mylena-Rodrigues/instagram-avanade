@@ -10,10 +10,18 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false,
         }
     );
-    /*Post.associate = (models) => {
-        Post.belongsTo(models.Usuario, {as: "usuario", foreignKey: 'usuarios_id'})
-        Post.hasMany(models.Comentario, {as: "comentarios", foreignKey: 'posts_id'});
-    }*/
+    Post.associate = (models) => {
+        // Relação N:1 (Cada post só tem um usuário)
+        Post.belongsTo(models.Usuario, {as: "usuario", foreignKey: "usuarios_id"});
+        // Relação N:M (Post tem curtidas de varios usuarios)
+        Post.belongsToMany(models.Usuario, {
+            as: "curtiu",
+            through: "curtidas",
+            foreignKey: "posts_id",
+            otherKey: "usuarios_id",
+            timestamps: false
+        });
+    }
 
     return Post;
 
